@@ -1,27 +1,48 @@
-const express = require('express');
-require('dotenv').config();
-const cors = require('cors');
-const path = require('path');
+/* eslint-disable camelcase */
+const express = require("express");
+require("dotenv").config();
+const session = require("express-session");
+const FileStore = require("session-file-store")(session);
+const cors = require("cors");
+const morgan = require("morgan");
+const path = require("path");
+
+const userRouter = require("./routes/userRouter");
+const progressRouter = require("./routes/progressRouter");
+const teamMatesRouter = require("./routes/teamMatesRouter");
+const feedBackRouter = require("./routes/feedBackRouter");
+const myFeedBackRouter = require("./routes/myFeedBackRouter");
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 
-// if (process.env.NODE_ENV === 'production') {
-//   console.log('imhelelele');
-//   app.get('/*', (req, res) => {
-//     req.sendFile(path.resolve(__dirname, 'build', 'index.html'));
-//   });
-// }
-app.use(express.static('build'));
-// const indexRouter = require('./routes/indexRouter');
-
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+const sessionConfig = {
+  store: new FileStore(),
+  key: "sid",
+  secret: "helloworld",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    expires: 24 * 60 * 60e3,
+    httpOnly: true,
+  },
+};
+app.use(express.static("build"));
+app.use(express.static(path.join(process.env.PWD, "public")));
+app.use(morgan("dev"));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(session(sessionConfig));
 
-// app.use('/', indexRouter);
-app.get('/*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+app.use("/user", userRouter);
+app.use("/progress", progressRouter);
+app.use("/teammates", teamMatesRouter);
+app.use("/feedback", feedBackRouter);
+app.use("/myfeedback", myFeedBackRouter);
+
+app.get("/*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "build", "index.html"));
 });
 
 app.listen(PORT, () => {
