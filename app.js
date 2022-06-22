@@ -24,7 +24,7 @@ const myProgressRouter = require('./routes/myProgressRouter');
 
 
 const app = express();
-const PORT = 3001;
+const PORT = 3000;
 
 const sessionParser = session({
   store: new FileStore(),
