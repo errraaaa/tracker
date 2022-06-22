@@ -16,10 +16,6 @@ module.exports = {
     dialect: 'postgres',
   },
   production: {
-    username: process.env.DB_USER_HEROKU,
-    password: process.env.DB_PASS_HEROKU,
-    database: process.env.DB_NAME_HEROKU,
-    host: '127.0.0.1',
-    dialect: 'postgres',
-  },
+    "use_env_variable": "DATABASE_URL"
+  }
 };
