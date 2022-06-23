@@ -39,7 +39,7 @@ const sessionParser = session({
 });
 app.use(express.static("build"));
 app.use(express.static(path.join(process.env.PWD, 'public')));
-app.use(cors({ credentials: true, origin: `${HEROKU_HOST}` }));
+app.use(cors({ credentials: true, origin: 'https://elbrustracker.herokuapp.com' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(sessionParser);
