@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable prefer-const */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-unused-vars */
@@ -9,11 +10,11 @@ require('dotenv').config();
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const cors = require('cors');
-const morgan = require('morgan');
 const { WebSocketServer } = require('ws');
 const path = require('path');
 const http = require('http');
 
+const { from } = require('form-data');
 const userRouter = require('./routes/userRouter');
 const progressRouter = require('./routes/progressRouter');
 const teamMatesRouter = require('./routes/teamMatesRouter');
@@ -21,7 +22,6 @@ const feedBackRouter = require('./routes/feedBackRouter');
 const myFeedBackRouter = require('./routes/myFeedBackRouter');
 const randomizerRouter = require('./routes/randomizerRouter');
 const myProgressRouter = require('./routes/myProgressRouter');
-
 
 const app = express();
 const PORT = process.env.PORT;
@@ -39,8 +39,7 @@ const sessionParser = session({
 });
 app.use(express.static("build"));
 app.use(express.static(path.join(process.env.PWD, 'public')));
-app.use(morgan('dev'));
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors({ credentials: true, origin: `${HEROKU_HOST}` }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(sessionParser);
@@ -57,6 +56,7 @@ app.use('/randomize', randomizerRouter);
 app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "build", "index.html"));
 });
+
 /* Web Socket Server */
 const map = new Map();
 
@@ -66,6 +66,7 @@ const wss = new WebSocketServer({ clientTracking: false, noServer: true });
 /* lostbutton code */
 let students = [];
 let lostStudents = [];
+let likes = 0;
 /* end of lostbutton code */
 
 server.on('upgrade', (request, socket, head) => {
@@ -86,13 +87,16 @@ wss.on('connection', async (ws, request) => {
   ws.on('message', (message) => {
     let { fromUser, data } = JSON.parse(message);
     if (fromUser === undefined) fromUser = 'гость';
+
     /* lostbutton code */
     switch (data) {
       case 'join': {
         if (!students.includes(fromUser)) {
           students.push(fromUser);
           for (const [id, clientWs] of map) {
-            clientWs.send(JSON.stringify({ message: `Пользователь ${fromUser} присоединился`, students: students.length, lostStudents: lostStudents.length }));
+            clientWs.send(JSON.stringify({
+              message: `Пользователь ${fromUser} присоединился`, students: students.length, lostStudents: lostStudents.length, likes,
+            }));
           }
         }
         break;
@@ -101,8 +105,19 @@ wss.on('connection', async (ws, request) => {
         if (!lostStudents.includes(fromUser)) {
           lostStudents.push(fromUser);
           for (const [id, clientWs] of map) {
-            clientWs.send(JSON.stringify({ message: `Пользователь ${fromUser} отвалился`, students: students.length, lostStudents: lostStudents.length }));
+            clientWs.send(JSON.stringify({
+              message: `Пользователь ${fromUser} отвалился`, students: students.length, lostStudents: lostStudents.length, likes,
+            }));
           }
+        }
+        break;
+      }
+      case 'like': {
+        likes++;
+        for (const [id, clientWs] of map) {
+          clientWs.send(JSON.stringify({
+            message: `Пользователь ${fromUser} Like`, students: students.length, lostStudents: lostStudents.length, likes,
+          }));
         }
         break;
       }
