@@ -1,16 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.3a26b908.css",
-    "main.js": "/static/js/main.6cea52ca.js",
-    "static/media/progress_img.jpg": "/static/media/progress_img.fba04428201cc4713b6a.jpg",
-    "static/media/teacher_monitor.jpg": "/static/media/teacher_monitor.5da57afbb296c78344f7.jpg",
-    "static/media/feedback.jpg": "/static/media/feedback.976c4056af9a4a0fdb2b.jpg",
+    "main.css": "/static/css/main.489e5a34.css",
+    "main.js": "/static/js/main.29619091.js",
+    "static/media/spinner.gif": "/static/media/spinner.d944122cbaa2f441e1b7.gif",
     "index.html": "/index.html",
-    "main.3a26b908.css.map": "/static/css/main.3a26b908.css.map",
-    "main.6cea52ca.js.map": "/static/js/main.6cea52ca.js.map"
+    "main.489e5a34.css.map": "/static/css/main.489e5a34.css.map",
+    "main.29619091.js.map": "/static/js/main.29619091.js.map"
   },
   "entrypoints": [
-    "static/css/main.3a26b908.css",
-    "static/js/main.6cea52ca.js"
+    "static/css/main.489e5a34.css",
+    "static/js/main.29619091.js"
   ]
 }

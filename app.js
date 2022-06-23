@@ -14,7 +14,6 @@ const { WebSocketServer } = require('ws');
 const path = require('path');
 const http = require('http');
 
-const { from } = require('form-data');
 const userRouter = require('./routes/userRouter');
 const progressRouter = require('./routes/progressRouter');
 const teamMatesRouter = require('./routes/teamMatesRouter');
@@ -37,7 +36,6 @@ const sessionParser = session({
     httpOnly: true,
   },
 });
-
 app.use(express.static("build"));
 app.use(express.static(path.join(process.env.PWD, 'public')));
 app.use(cors({ credentials: true, origin: 'https://elbrustracker.herokuapp.com' }));
@@ -51,7 +49,7 @@ app.use('/myprogress', myProgressRouter);
 app.use('/teammates', teamMatesRouter);
 app.use('/feedback', feedBackRouter);
 app.use('/myfeedback', myFeedBackRouter);
-app.use('/randomize', randomizerRouter);
+app.use('/randomizer', randomizerRouter);
 
 app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "build", "index.html"));
@@ -94,6 +92,7 @@ wss.on('connection', async (ws, request) => {
         if (!students.includes(fromUser)) {
           students.push(fromUser);
           for (const [id, clientWs] of map) {
+            console.log('SENT--->');
             clientWs.send(JSON.stringify({
               message: `Пользователь ${fromUser} присоединился`, students: students.length, lostStudents: lostStudents.length, likes,
             }));
@@ -105,6 +104,7 @@ wss.on('connection', async (ws, request) => {
         if (!lostStudents.includes(fromUser)) {
           lostStudents.push(fromUser);
           for (const [id, clientWs] of map) {
+            console.log('SENT--->');
             clientWs.send(JSON.stringify({
               message: `Пользователь ${fromUser} отвалился`, students: students.length, lostStudents: lostStudents.length, likes,
             }));
