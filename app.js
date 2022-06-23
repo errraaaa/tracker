@@ -37,6 +37,7 @@ const sessionParser = session({
     httpOnly: true,
   },
 });
+
 app.use(express.static("build"));
 app.use(express.static(path.join(process.env.PWD, 'public')));
 app.use(cors({ credentials: true, origin: 'https://elbrustracker.herokuapp.com' }));
@@ -51,7 +52,6 @@ app.use('/teammates', teamMatesRouter);
 app.use('/feedback', feedBackRouter);
 app.use('/myfeedback', myFeedBackRouter);
 app.use('/randomize', randomizerRouter);
-
 
 app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "build", "index.html"));
