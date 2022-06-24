@@ -23,7 +23,7 @@ const randomizerRouter = require('./routes/randomizerRouter');
 const myProgressRouter = require('./routes/myProgressRouter');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT;
 
 const sessionParser = session({
   store: new FileStore(),
