@@ -10,7 +10,6 @@ require('dotenv').config();
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const cors = require('cors');
-const morgan = require('morgan');
 const { WebSocketServer } = require('ws');
 const path = require('path');
 const http = require('http');
@@ -40,7 +39,6 @@ const sessionParser = session({
 
 app.use(express.static("build"));
 app.use(express.static(path.join(process.env.PWD, 'public')));
-app.use(morgan('dev'));
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
