@@ -23,7 +23,7 @@ const randomizerRouter = require('./routes/randomizerRouter');
 const myProgressRouter = require('./routes/myProgressRouter');
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = 3001;
 
 const sessionParser = session({
   store: new FileStore(),
@@ -36,7 +36,6 @@ const sessionParser = session({
     httpOnly: true,
   },
 });
-
 app.use(express.static("build"));
 app.use(express.static(path.join(process.env.PWD, 'public')));
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
@@ -91,27 +90,27 @@ wss.on('connection', async (ws, request) => {
     /* lostbutton code */
     switch (data) {
       case 'join': {
-        if (!students.includes(fromUser)) {
-          students.push(fromUser);
-          for (const [id, clientWs] of map) {
-            console.log('SENT--->');
-            clientWs.send(JSON.stringify({
-              message: `Пользователь ${fromUser} присоединился`, students: students.length, lostStudents: lostStudents.length, likes,
-            }));
-          }
+        // if (!students.includes(fromUser)) {
+        students.push(fromUser);
+        for (const [id, clientWs] of map) {
+          console.log('SENT--->');
+          clientWs.send(JSON.stringify({
+            message: `Пользователь ${fromUser} присоединился`, students: students.length, lostStudents: lostStudents.length, likes,
+          }));
         }
+        // }
         break;
       }
       case 'lost': {
-        if (!lostStudents.includes(fromUser)) {
-          lostStudents.push(fromUser);
-          for (const [id, clientWs] of map) {
-            console.log('SENT--->');
-            clientWs.send(JSON.stringify({
-              message: `Пользователь ${fromUser} отвалился`, students: students.length, lostStudents: lostStudents.length, likes,
-            }));
-          }
+        // if (!lostStudents.includes(fromUser)) {
+        lostStudents.push(fromUser);
+        for (const [id, clientWs] of map) {
+          console.log('SENT--->');
+          clientWs.send(JSON.stringify({
+            message: `Пользователь ${fromUser} отвалился`, students: students.length, lostStudents: lostStudents.length, likes,
+          }));
         }
+        // }
         break;
       }
       case 'like': {
