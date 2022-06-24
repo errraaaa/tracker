@@ -10,6 +10,7 @@ require('dotenv').config();
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const cors = require('cors');
+const morgan = require('morgan');
 const { WebSocketServer } = require('ws');
 const path = require('path');
 const http = require('http');
@@ -36,9 +37,11 @@ const sessionParser = session({
     httpOnly: true,
   },
 });
+
 app.use(express.static("build"));
 app.use(express.static(path.join(process.env.PWD, 'public')));
-app.use(cors({ credentials: true, origin: 'https://elbrustracker.herokuapp.com' }));
+app.use(morgan('dev'));
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(sessionParser);
@@ -50,6 +53,7 @@ app.use('/teammates', teamMatesRouter);
 app.use('/feedback', feedBackRouter);
 app.use('/myfeedback', myFeedBackRouter);
 app.use('/randomizer', randomizerRouter);
+
 
 app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "build", "index.html"));
